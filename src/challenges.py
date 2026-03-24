@@ -1,30 +1,20 @@
-"""Week 3 homework: The Royal Rail Ledger.
-
-Implement the required functions below.
-Use stdlib only.
-"""
+"""Week 3 homework: The Royal Rail Ledger."""
 
 from __future__ import annotations
 
 
 class SLLNode:
-    """Node for a singly linked list."""
-
     def __init__(self, value: int, next: "SLLNode | None" = None) -> None:
         self.value = value
         self.next = next
 
 
 class SinglyLinkedList:
-    """Simple singly linked list with a head reference."""
-
     def __init__(self) -> None:
         self.head: SLLNode | None = None
 
 
 class DLLNode:
-    """Node for a doubly linked list."""
-
     def __init__(
         self,
         value: int,
@@ -37,47 +27,100 @@ class DLLNode:
 
 
 class DoublyLinkedList:
-    """Simple doubly linked list with head and tail references."""
-
     def __init__(self) -> None:
         self.head: DLLNode | None = None
         self.tail: DLLNode | None = None
 
 
+# ================================
+# Build SLL from list
+# ================================
 def build_sll_from_list(values: list[int]) -> SinglyLinkedList:
-    """Build and return a singly linked list from a Python list.
+    sll = SinglyLinkedList()
+    
+    if not values:
+        return sll
 
-    Examples:
-        >>> sll_to_list(build_sll_from_list([]))
-        []
-        >>> sll_to_list(build_sll_from_list([4, 7, 9]))
-        [4, 7, 9]
-    """
-    raise NotImplementedError
+    sll.head = SLLNode(values[0])
+    current = sll.head
+
+    for value in values[1:]:
+        current.next = SLLNode(value)
+        current = current.next
+
+    return sll
 
 
+# ================================
+# Convert SLL to Python list
+# ================================
 def sll_to_list(sll: SinglyLinkedList) -> list[int]:
-    """Return all values from a singly linked list as a Python list."""
-    raise NotImplementedError
+    result = []
+    current = sll.head
+
+    while current:
+        result.append(current.value)
+        current = current.next
+
+    return result
 
 
+# ================================
+# Find first repeated value
+# ================================
 def find_first_repeat_sll(sll: SinglyLinkedList) -> int | None:
-    """Return the first repeated value seen from left to right.
+    seen = set()
+    current = sll.head
 
-    Return None if no value repeats.
-    """
-    raise NotImplementedError
+    while current:
+        if current.value in seen:
+            return current.value
+        seen.add(current.value)
+        current = current.next
+
+    return None
 
 
+# ================================
+# Remove all nodes from DLL
+# ================================
 def remove_all_from_dll(dll: DoublyLinkedList, target: int) -> None:
-    """Remove all nodes whose value equals target.
+    current = dll.head
 
-    Update dll.head and dll.tail correctly.
-    Return None.
-    """
-    raise NotImplementedError
+    while current:
+        next_node = current.next
+
+        if current.value == target:
+            # If it's head
+            if current.prev is None:
+                dll.head = current.next
+                if dll.head:
+                    dll.head.prev = None
+            else:
+                current.prev.next = current.next
+
+            # If it's tail
+            if current.next is None:
+                dll.tail = current.prev
+                if dll.tail:
+                    dll.tail.next = None
+            else:
+                current.next.prev = current.prev
+
+        current = next_node
 
 
+# ================================
+# Check palindrome DLL
+# ================================
 def is_train_palindrome(dll: DoublyLinkedList) -> bool:
-    """Stretch: return True if the DLL reads the same forward and backward."""
-    raise NotImplementedError
+    left = dll.head
+    right = dll.tail
+
+    while left and right and left != right and left.prev != right:
+        if left.value != right.value:
+            return False
+        left = left.next
+        right = right.prev
+
+    return True
